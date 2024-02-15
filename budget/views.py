@@ -7,8 +7,9 @@ from django.contrib.auth.models import User   #to get the user and password
 from django.contrib.auth import authenticate,login,logout     #to check the user name and passwrod(authenticate)
 from django.utils import timezone #to get the month and year
 from django.db.models import Sum
-from django.utils.decorators import method_decorator
-from django.contrib import messages
+from django.utils.decorators import method_decorator 
+from django.contrib import messages  # for viewing the messages
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
@@ -20,6 +21,8 @@ def signin_required(fn):
         else:
             return fn(request,*args,**kwargs)
     return wrapper       
+
+decs=[signin_required,never_cache]
 
 class TransactionForm(forms.ModelForm):
     class Meta:
@@ -40,7 +43,7 @@ class TransactionForm(forms.ModelForm):
         # method get 
         # url - l:8000/transaction/all/
 
-@method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 class TransationView(View):
     def get(self,request,*args,**kwargs):
         qs=Transaction.objects.filter(user=request.user)
@@ -81,7 +84,7 @@ class TransationView(View):
     # url - l:8000/transaction/add/
     # method get,post
     
-@method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 
 class TransactionCreateView(View):
     def get(self,request,*args,**kwargs):
@@ -120,7 +123,7 @@ class TransactionDetailView(View):
 # Transaction delete view
 # url - lh:8000/transaction/remove/
 # method get
-@method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 
 class TransactionDeleteView(View):
     def get(self,request,*args,**kwargs):
@@ -133,7 +136,7 @@ class TransactionDeleteView(View):
 # Transaction update view
 # url-lh:8000/transactions/update/
 # method post & get
-@method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
    
 class TransactionUpdateView(View):
     def get(self,request,*args,**kwargs):
@@ -195,7 +198,7 @@ class LoginForm(forms.Form):
 class SigninView(View):
     def get(self,request,*args,**kwargs):
         form=LoginForm()
-        return render(request,"signin.html",{"form":form})
+        return render(request,"signin_1.html",{"form":form})
     def post(self,request,*args,**kwargs):
         form=LoginForm(request.POST)
         if form.is_valid():
@@ -207,9 +210,9 @@ class SigninView(View):
                 # print("valid")
                 return redirect("transaction-list")
         # print("invalid")
-        return render(request,"signin.html",{"form":form})
+        return render(request,"signin_1.html",{"form":form})
 
-@method_decorator(signin_required,name="dispatch")
+@method_decorator(decs,name="dispatch")
 
 class SignOut(View):
     def get(self,request,*args,**kwargs):

@@ -5,7 +5,6 @@
 
 {%block main_block%}
 
-    <a href="{%url 'signout'%}"><i class="fa-solid fa-right-from-bracket" style="color: #ff0000;"></i> </a>
    
     <h1 class="text-center fw-bolder mt-3 text-info">ExpenseTracker</h1>
     <div class="d-flex justify-content-center">
@@ -26,7 +25,6 @@
             <div class="col-3"></div>
             <div class="col-6">
                 <h3 class="fw-bold text-secondary">History</h3>
-                <a href="{%url 'transaction-add'%}"><button class="bg-success text-white rounded-pill"> Add <i class="fa-solid fa-plus" style="color: #ffffff;"></i></button></a>
                 <h3 class="text-center text-danger fw-bold">{{request.user}}</h3>
 
                {%for t in data%}
